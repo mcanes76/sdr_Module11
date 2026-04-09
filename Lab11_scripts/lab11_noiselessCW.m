@@ -4,7 +4,7 @@ num_samples_in_simulation = num_samples_per_observation*num_observations;
 
 samples_per_symbol = 8;
 num_symbols = num_samples_in_simulation/samples_per_symbol;
-test_signal = exp(1.0i*2*pi*0.125*[0:(num_samples_in_simulation-1)]);
+test_signal = exp(1.0i*2*pi*0.125*(0:(num_samples_in_simulation-1)));
 test_signal=test_signal(:);
 symbol_vector = randi([0 1], num_symbols, 1)*2-1;
 modulation_vector = repelem(symbol_vector,samples_per_symbol);
