@@ -77,9 +77,11 @@ Theoretical and simulation paths should share the same `L`, SNR definition, nois
   $$
   T = \sum_{n=1}^{L} |x[n]|^2
   $$
+
 - Decision rule:
   $$
-  T \mathop{\gtrless}_{H_0}^{H_1} \lambda
+  T > \lambda \;\; \text{decide } H_1,\qquad
+  T < \lambda \;\; \text{decide } H_0
   $$
 
 ### Live-Lab Guidance
