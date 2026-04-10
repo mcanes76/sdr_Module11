@@ -27,10 +27,12 @@ hold on
 plot(snr_dB_vec, acc_coded, '-x')
 hold off
 xlabel('SNR (dB)')
-ylabel('Payload Bit Accuracy')
+ylabel('Truth Payload Accuracy')
 legend('Uncoded', 'Hamming(7,4)', 'Location', 'southeast')
 grid on
-ylim([1e-4 1])
+xlim([snr_dB_vec(1) snr_dB_vec(end)])
+xticks(snr_dB_vec)
+ylim([0.88 1.0])
 ax = gca;
 ax.Toolbar.Visible = 'off';
 exportgraphics(gcf, 'problem_2_2_accuracy.png', 'Resolution', 150)

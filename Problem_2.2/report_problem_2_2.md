@@ -23,7 +23,7 @@ payload -> CRC-16 -> BPSK -> AWGN -> hard demod -> CRC check
 Coded branch:
 payload -> CRC-16 -> Hamming(7,4) -> BPSK -> AWGN -> hard demod -> Hamming decode -> CRC check
 
-The payload bit accuracy metric is computed against the original 192-bit truth payload. Packet error rate is defined by CRC failure after receiver processing.
+The payload bit accuracy metric is the fraction of the original 192-bit truth payload recovered correctly after receiver processing. Packet error rate is defined by CRC failure after receiver processing.
 
 ## Fairness Convention
 Eb/N0-style fairness is referenced to the 208-bit CRC-appended packet. The coded branch uses
@@ -44,16 +44,14 @@ The executed MATLAB run produced these vectors:
 
 PER decreases steadily with increasing SNR for both cases. The coded case begins to improve PER clearly from the moderate-SNR region onward. For example, at `6 dB` the uncoded PER was `0.392600` while the coded PER was `0.244150`, and at `9 dB` the uncoded PER was `0.006100` while the coded PER was `0.002050`.
 
-Payload bit accuracy also improves with SNR for both branches. At lower SNR the uncoded branch has slightly higher payload bit accuracy, but the coded branch overtakes it in the moderate-to-high SNR region. For example, at `7 dB` the uncoded payload accuracy was `0.999234` while the coded payload accuracy was `0.999362`.
+Payload bit accuracy also improves with SNR for both branches. At low SNR the uncoded branch shows slightly higher payload bit accuracy due to the rate loss of the Hamming code. As SNR increases, the Hamming decoder begins correcting single-bit errors, and the payload accuracy of both systems converges to nearly identical values. For example, at `7 dB` the uncoded payload accuracy was `0.999234` while the coded payload accuracy was `0.999362`.
+
+The accuracy plot reports the fraction of the original 192 payload bits recovered correctly relative to the truth data. This metric can remain close to 1 even when packet error rate is still noticeable, because CRC declares a packet failure if any residual error remains after receiver processing. As a result, the PER plot is the more sensitive measure of end-to-end packet reliability, while the truth-payload-accuracy plot shows the overall bit-correctness trend.
 
 ## Figures
 ![PER Plot](problem_2_2_per.png)
 
 ![Accuracy Plot](problem_2_2_accuracy.png)
 
-## Discussion
+## Short Discussion
 Hamming coding improves reliability in the moderate-SNR region by adding redundancy before transmission. In this simulation, packet error rate is defined by CRC failure, and hard-decision demodulation and hard Hamming decoding were used throughout. The coded branch shows the expected PER improvement once the SNR is high enough for the error-correcting code to help more than the added redundancy hurts.
-
-The simulation results demonstrate that the Hamming(7,4) coded system provides improved packet reliability relative to the uncoded system. This improvement is observed as a horizontal shift of the packet error rate (PER) curve toward lower SNR values. At moderate-to-high SNR values, the coded system achieves the same PER as the uncoded system at approximately 1–2 dB lower SNR. This behavior represents coding gain and results from the error-correction capability of the Hamming(7,4) code, which can correct single-bit errors within each codeword and thereby reduce the probability that residual errors remain in the packet after decoding.
-
-Because packet errors are defined using CRC validation, any residual bit error in the decoded packet results in a packet failure. The Hamming decoder reduces the number of bit errors before CRC checking, which significantly lowers the probability that the CRC detects a corrupted packet.
