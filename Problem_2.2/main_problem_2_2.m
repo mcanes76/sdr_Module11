@@ -7,7 +7,7 @@ crc_length = 16;
 packet_length = 208;
 coded_length = 364;
 snr_dB_vec = 0:12;
-num_trials = 5000;
+num_trials = 20000;
 
 per_uncoded = zeros(size(snr_dB_vec));
 per_coded = zeros(size(snr_dB_vec));
@@ -43,7 +43,7 @@ for snr_idx = 1:length(snr_dB_vec)
     acc_coded(snr_idx) = payload_accuracy_coded / num_trials;
 end
 
-helper_plot_per_accuracy(snr_dB_vec, per_uncoded, per_coded, acc_uncoded, acc_coded)
+helper_plot_per_accuracy(snr_dB_vec, per_uncoded, per_coded, acc_uncoded, acc_coded, num_trials)
 
 save('problem_2_2_results.mat', 'payload_length', 'crc_length', 'packet_length', ...
     'coded_length', 'snr_dB_vec', 'num_trials', 'per_uncoded', 'per_coded', ...
