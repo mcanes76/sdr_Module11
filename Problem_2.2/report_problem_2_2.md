@@ -55,3 +55,5 @@ The accuracy plot reports the fraction of the original 192 payload bits recovere
 
 ## Short Discussion
 Hamming coding improves reliability in the moderate-SNR region by adding redundancy before transmission. In this simulation, packet error rate is defined by CRC failure, and hard-decision demodulation and hard Hamming decoding were used throughout. The coded branch shows the expected PER improvement once the SNR is high enough for the error-correcting code to help more than the added redundancy hurts.
+
+Because the Hamming(7,4) code expands the 208-bit packet to 364 transmitted bits, the coded system initially experiences a reduction in effective energy per transmitted bit. As a result, the uncoded system shows slightly higher payload bit accuracy at very low SNR before the error-correction capability of the code becomes beneficial.
