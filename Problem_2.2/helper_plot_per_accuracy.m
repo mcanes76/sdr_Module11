@@ -1,9 +1,9 @@
 function helper_plot_per_accuracy(snr_dB_vec, per_uncoded, per_coded, acc_uncoded, acc_coded)
 
 figure
-plot(snr_dB_vec, per_uncoded, '-o')
+semilogy(snr_dB_vec, per_uncoded, '-o')
 hold on
-plot(snr_dB_vec, per_coded, '-x')
+semilogy(snr_dB_vec, per_coded, '-x')
 hold off
 xlabel('SNR (dB)')
 ylabel('Packet Error Rate')

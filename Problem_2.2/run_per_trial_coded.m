@@ -1,6 +1,6 @@
-function [packet_error, payload_bit_accuracy] = run_per_trial_coded(payload_length, snr_dB)
+function [packet_error, payload_bit_accuracy] = run_per_trial_coded(payload_bits, snr_dB)
 
-payload_bits = randi([0 1], 1, payload_length);
+payload_bits = payload_bits(:).';
 packet_bits = append_crc16(payload_bits);
 coded_bits = hamming74_encode_packet(packet_bits);
 

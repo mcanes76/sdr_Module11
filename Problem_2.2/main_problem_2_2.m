@@ -23,11 +23,13 @@ for snr_idx = 1:length(snr_dB_vec)
     payload_accuracy_coded = 0;
 
     for trial_idx = 1:num_trials
+        payload_bits = randi([0 1], 1, payload_length);
+
         [packet_error_uncoded, payload_bit_accuracy_uncoded] = ...
-            run_per_trial_uncoded(payload_length, snr_dB);
+            run_per_trial_uncoded(payload_bits, snr_dB);
 
         [packet_error_coded, payload_bit_accuracy_coded] = ...
-            run_per_trial_coded(payload_length, snr_dB);
+            run_per_trial_coded(payload_bits, snr_dB);
 
         packet_errors_uncoded = packet_errors_uncoded + packet_error_uncoded;
         packet_errors_coded = packet_errors_coded + packet_error_coded;
