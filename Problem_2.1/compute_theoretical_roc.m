@@ -3,6 +3,7 @@ function [falsealarmvec_endet_th, posdetvec_endet_th] = ...
 
 falsealarmvec_endet_th = zeros(size(threshold_range));
 posdetvec_endet_th = zeros(size(threshold_range));
+signal_term = abs(signal_amplitude)*sqrt(measurement_length)/sigma_n;
 
 for idx = 1:length(threshold_range)
     eta = threshold_range(idx);
@@ -11,7 +12,7 @@ for idx = 1:length(threshold_range)
         gammainc(eta/(2*sigma_n^2), measurement_length, 'upper');
 
     posdetvec_endet_th(idx) = ...
-        marcumq(abs(signal_amplitude)*sqrt(measurement_length)/sigma_n, ...
+        marcumq(signal_term, ...
         sqrt(eta)/sigma_n, measurement_length);
 end
 

@@ -1,16 +1,14 @@
 # Problem 2.1: ROC for Energy Detector
 
-**Do not execute until reviewed.**
-
-Documentation generated for review only. No scripts or simulations have been executed.
+**Documentation updated for implementation review.**
 
 ## Purpose / Assignment Intent
-Build theoretical and simulated ROC curves for an energy detector at `SNR = -3 dB` using measurement length `K = 32` complex samples. The main deliverable is an overlay plot comparing theory and simulation over the same threshold sweep.
+Problem 2.1 compares theoretical and simulated ROC curves for an energy detector at `SNR = -3 dB` using measurement length `K = 32` complex samples. The same threshold vector is used for both paths so the ROC overlay is directly comparable.
 
 ## Requirements Summary
-The assignment uses an energy detector with decision metric formed over `K = 32` samples. Both the theoretical ROC and the Monte Carlo ROC should be computed using the same threshold vector. False alarm must be measured with noise-only trials, and detection must be measured with signal-plus-noise trials using the same noise variance in both cases.
+The detector uses the energy in one measurement window as its decision statistic. The theoretical ROC is computed from the textbook expressions in MATLAB form, and the simulated ROC is computed with Monte Carlo trials.
 
-For this problem, the threshold vector is defined as:
+The threshold vector is
 
 $$
 \texttt{threshold\_base} = 0.1:0.1:20
@@ -20,47 +18,53 @@ $$
 \texttt{threshold\_range} = \texttt{threshold\_base} \cdot K
 $$
 
+False alarm is estimated from noise-only trials. Detection is estimated from signal-plus-noise trials. Both use the same complex noise variance.
+
 ## Inputs and Outputs
 ### Inputs
 - Measurement length `K = 32`
 - SNR value `-3 dB`
-- Noise standard deviation $\sigma_n$
+- Total complex noise standard deviation $\sigma_n$
 - Threshold vector $\eta$
 - Number of Monte Carlo trials
 
 ### Outputs
-- Theoretical $P_{FA}$ and $P_D$ arrays
-- Simulated $P_{FA}$ and $P_D$ arrays
-- ROC overlay plot
+- Theoretical $P_{FA}$ and $P_D$
+- Simulated $P_{FA}$ and $P_D$
+- ROC plot saved to file
 
 ## Assumptions and Interpretation Notes
-The existing repository uses `Problem_2.1`, so this documentation follows that folder naming. The live lab style suggests a simple complex-baseband model, a direct threshold sweep, and short scripts with minimal abstraction.
+This problem uses a simple complex-baseband model consistent with the live lab. The notation $\sigma_n$ is treated as the total complex noise standard deviation in both the theory and simulation, with
 
-The detector should use the same threshold vector for both the theoretical and simulated paths. The simulation should use noise-only trials to estimate false alarm and signal-plus-noise trials to estimate detection, with the same noise variance in both tests.
+$$
+E[|n|^2] = \sigma_n^2
+$$
+
+To match that convention in simulation, complex AWGN is generated as
+
+$$
+n = \frac{\sigma_n}{\sqrt{2}}\left(n_I + j n_Q\right)
+$$
+
+where `randn` is used for both real branches. This gives each branch variance $\sigma_n^2/2$, so the total complex noise power is $\sigma_n^2$.
+
+The detector uses the same threshold vector for the theoretical and simulated ROC paths, noise-only trials for false alarm, and signal-plus-noise trials for detection.
 
 ## Proposed Software Architecture
-Keep the structure simple:
+Keep the implementation simple and close to the live lab:
 
-- A theoretical ROC path computes $P_{FA}$ and $P_D$ from the closed-form equations.
-- A simulated ROC path estimates $P_{FA}$ and $P_D$ using Monte Carlo trials.
-- A main script defines shared parameters and calls both paths.
-
-This keeps the implementation aligned with the live lab and avoids over-engineering.
-
-## Functional Decomposition into MATLAB Scripts/Functions
-- `main_problem_2_1.m`
-  Defines `K`, SNR, threshold vector, and trial count, then calls the two ROC paths.
-- `compute_theoretical_roc.m`
-  Computes theoretical $P_{FA}$ and $P_D$ over the threshold vector.
-- `simulate_energy_detector_roc.m`
-  Simulates noise-only and signal-plus-noise trials over the same threshold vector.
+- `main_problem_2_1.m` defines parameters, calls both ROC paths, and makes the plot.
+- `compute_theoretical_roc.m` computes the theoretical ROC.
+- `simulate_energy_detector_roc.m` computes the simulated ROC.
 
 ## Data Flow
-1. Define `K = 32`, SNR, noise level, and the threshold vector.
-2. Compute the theoretical ROC over the full threshold range.
-3. Simulate noise-only trials to estimate $P_{FA}$.
-4. Simulate signal-plus-noise trials to estimate $P_D$.
-5. Overlay theoretical and simulated ROC curves.
+1. Define `K`, SNR, `threshold_range`, `\sigma_n`, and `num_trials`.
+2. Convert SNR from dB to linear scale.
+3. Compute the constant signal amplitude from the chosen $\sigma_n$.
+4. Compute theoretical $P_{FA}$ and $P_D$.
+5. Simulate noise-only trials for $P_{FA}$.
+6. Simulate signal-plus-noise trials for $P_D$.
+7. Plot and save the ROC figure.
 
 ## Key Formulas and Algorithm Notes
 The decision metric is
@@ -69,80 +73,61 @@ $$
 T = \sum_{n=1}^{K} |r[n]|^2
 $$
 
-The markdown renderer may not display special decision operators reliably, so the decision rule is written explicitly in words:
+The markdown renderer may not display special decision operators reliably, so the decision rule is written in words:
 
 Decide $H_1$ if $T > \eta$; otherwise decide $H_0$.
 
-From the textbook form, the probability of missed detection is
-
-$$
-P_{MD} = 1 - Q_K\!\left(\frac{\sqrt{E_s}}{\sigma_n},\, \frac{\sqrt{\eta}}{\sigma_n}\right)
-$$
-
-Therefore, the probability of detection is
-
-$$
-P_D = Q_K\!\left(\frac{\sqrt{E_s}}{\sigma_n},\, \frac{\sqrt{\eta}}{\sigma_n}\right)
-$$
-
-The probability of false alarm is
-
-$$
-P_{FA} = \Gamma\!\left(K,\, \frac{\eta}{2\sigma_n^2}\right)
-$$
-
-where $\Gamma(K, x)$ denotes the normalized upper incomplete gamma function.
-
-In the MATLAB form used by the live lab, these become
+Theoretical false alarm probability:
 
 $$
 P_{FA} = \mathrm{gammainc}\!\left(\frac{\eta}{2\sigma_n^2},\, K,\, \text{upper}\right)
 $$
 
+Theoretical detection probability:
+
 $$
 P_D = \mathrm{marcumq}\!\left(\frac{\sqrt{E_s}}{\sigma_n},\, \frac{\sqrt{\eta}}{\sigma_n},\, K\right)
 $$
 
-For a constant-amplitude signal, a common simplification is
+For a constant-amplitude signal,
 
 $$
 E_s = |A|^2 K
 $$
 
-which gives
+so
 
 $$
 P_D = \mathrm{marcumq}\!\left(\frac{|A|\sqrt{K}}{\sigma_n},\, \frac{\sqrt{\eta}}{\sigma_n},\, K\right)
 $$
 
-For the simulation notes, use
+For simulation,
 
 $$
 \mathrm{SNR}_{\text{linear}} = 10^{\mathrm{SNR}_{dB}/10}
 $$
 
-and, for a simple complex-baseband model,
+and
 
 $$
-\mathrm{SNR} = \frac{|A|^2}{2\sigma_n^2}
+\mathrm{SNR}_{\text{linear}} = \frac{|A|^2}{\sigma_n^2}
 $$
 
-so if $\sigma_n$ is chosen first,
+therefore
 
 $$
-A = \sqrt{2\sigma_n^2 \cdot \mathrm{SNR}_{\text{linear}}}
+A = \sigma_n \sqrt{\mathrm{SNR}_{\text{linear}}}
 $$
 
 ## Plot / Report Deliverables Expected
-- ROC overlay plot comparing theoretical and simulated curves
-- Brief parameter summary listing `K`, SNR, threshold vector, and trial count
+- ROC overlay plot with simulated and theoretical curves
+- Short markdown report summarizing the setup and result
 
 ## Risks / Validation Concerns
-The main risk is inconsistent normalization between the theoretical and simulated paths. In particular, the mapping from SNR to amplitude should match the same $\sigma_n$ used in both the noise-only and signal-plus-noise trials.
+The main point to keep consistent is the noise convention. The theoretical expressions and the simulation must use the same definition of $\sigma_n$, and the complex AWGN generation must include the $\sqrt{2}$ scaling so that the total complex noise power remains $\sigma_n^2$.
 
-The threshold vector must also be scaled by measurement length as specified. If that scaling is skipped, the ROC comparison will not match the intended assignment setup.
+The threshold vector must also remain scaled by `K` as required by the assignment.
 
 ## Open Questions / Review Items
-- Confirm that the constant-amplitude signal model is acceptable for the simulation.
-- Confirm the preferred Monte Carlo trial count before coding.
-- Once this documentation is approved, MATLAB code generation can begin.
+- Confirm whether any additional annotation is needed on the final plot.
+- Confirm whether the current simple constant-amplitude signal model is sufficient for submission.
