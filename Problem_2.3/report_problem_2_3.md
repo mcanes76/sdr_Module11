@@ -6,6 +6,8 @@ Estimate the noise power of the four provided OTA captures using the MDL-eigenva
 ## Method Summary
 The implementation follows the live-lab style interface `EstimateNoise(captured_data)`. Each capture is reshaped into an observation matrix using a fixed observation length of `64` samples. The sample covariance matrix is formed, its eigenvalues are computed and sorted in descending order, and the corrected homework MDL equation is evaluated over all candidate values of `k`.
 
+The implementation used the corrected homework form of Equation 5.20, in which the two MDL terms are summed before minimizing over 𝑘.
+
 The minimizing `k` is used to define the noise subspace, and the final noise estimate is computed as the mean of the trailing eigenvalues.
 
 ## Observation Length
