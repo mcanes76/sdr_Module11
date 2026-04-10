@@ -10,7 +10,7 @@ sigma_n = 1;
 num_trials = 100000;
 
 SNR_linear = 10^(SNR_dB/10);
-signal_amplitude = sigma_n * sqrt(SNR_linear);
+signal_amplitude = sqrt(2)*sigma_n*sqrt(SNR_linear);
 
 [falsealarmvec_endet_th, posdetvec_endet_th] = ...
     compute_theoretical_roc(threshold_range, measurement_length, sigma_n, signal_amplitude);
