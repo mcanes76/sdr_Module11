@@ -13,7 +13,7 @@ Compute and compare the theoretical and simulated ROC curves for an energy detec
 - Run-time signal amplitude:
 
 $$
-A = 0.70795
+A = 1.0012
 $$
 
 ## Equations Used
@@ -49,16 +49,28 @@ $$
 A = \sigma_n \sqrt{\mathrm{SNR}_{\text{linear}}}
 $$
 
+For this homework implementation, the script uses the Live Lab amplitude mapping
+
+$$
+A = \sqrt{2}\,\sigma_n\sqrt{\mathrm{SNR}_{\text{linear}}}
+$$
+
 ## Method Summary
 The theoretical ROC was computed directly from the MATLAB `gammainc` and `marcumq` expressions over the full threshold vector.
+
+In this homework implementation, $\sigma_n$ is treated as the standard deviation of one axis of the complex noise, consistent with the Live Lab convention.
 
 The simulated ROC used Monte Carlo trials with complex AWGN generated as
 
 $$
-n = \frac{\sigma_n}{\sqrt{2}}\left(n_I + j n_Q\right)
+n = \sigma_n \left(n_I + j n_Q\right)
 $$
 
-so that the total complex noise power satisfies $E[|n|^2] = \sigma_n^2$. False alarm was estimated using noise-only trials, and detection was estimated using constant-amplitude signal-plus-noise trials.
+This matches the theoretical formulas used for $P_{FA}$ and $P_D$ in the homework and live-lab setup. Under this convention, the total complex noise power is $2\sigma_n^2$.
+
+False alarm was estimated using noise-only trials, and detection was estimated using constant-amplitude signal-plus-noise trials.
+
+Using $\sigma_n/\sqrt{2}$ is also valid in other contexts when $\sigma_n$ denotes the total complex RMS noise, but this homework follows the Live Lab per-axis convention for consistency.
 
 ## ROC Figure
 ![Problem 2.1 ROC](roc_problem_2_1.png)
