@@ -27,7 +27,7 @@ xlabel('Probability of False Alarm')
 ylabel('Probability of Detection')
 legend('Energy Detector Simulation', 'Energy Detector Theory', 'Location', 'southeast')
 grid on
-axis([0 1 0 1])
+axis([-0.1 1 -0.1 1.1])
 ax = gca;
 ax.Toolbar.Visible = 'off';
 exportgraphics(gcf, 'roc_problem_2_1.png', 'Resolution', 150)
