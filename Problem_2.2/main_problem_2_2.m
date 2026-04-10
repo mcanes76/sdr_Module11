@@ -6,7 +6,7 @@ payload_length = 192;
 crc_length = 16;
 packet_length = 208;
 coded_length = 364;
-snr_dB_vec = 0:9;
+snr_dB_vec = 0:12;
 num_trials = 5000;
 
 per_uncoded = zeros(size(snr_dB_vec));
