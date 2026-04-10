@@ -39,12 +39,12 @@ Prepare an implementation plan for estimating noise variance from four OTA captu
 
 ## Verification Strategy
 - Check that the estimated noise power is positive for every capture.
-- Check that the selected `k` lies in a valid range `0 \le k < M`.
+- Check that the selected $k$ lies in a valid range $0 \le k < M$.
 - Check that the covariance matrix dimensions agree with the chosen observation length.
 - Check that relative error is computed as
-  \[
+  $$
   \frac{|\hat{\sigma}_n^2 - \sigma_{n,\text{truth}}^2|}{\sigma_{n,\text{truth}}^2}
-  \]
+  $$
 - Check that data reshaping handles non-integer multiples of the observation length explicitly.
 - Check whether the target relative error below `5%` is met consistently across all captures.
 

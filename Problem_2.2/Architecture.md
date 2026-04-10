@@ -43,8 +43,8 @@ Design a packet-level simulation that compares uncoded and Hamming-coded packet 
   - payload + CRC: `208` bits
   - Hamming(7,4) coded packet: `364` bits
 - Since CRC is part of the assignment-defined packet structure, the cleanest baseline proposal is to transmit the `208`-bit CRC-appended packet uncoded in the baseline branch and to transmit the `364`-bit Hamming-coded packet in the coded branch.
-- The statement about adjusting noise for fairness should be made explicit before coding. A recommended interpretation is fairness in `E_b/N_0` with respect to the original `192` information bits, not merely transmitted symbol energy.
-- “Accuracy with respect to truth data” is ambiguous from the summary alone. A practical proposal is to report bit accuracy relative to the original payload and optionally packet-level correctness as a secondary metric.
+- The statement about adjusting noise for fairness should be made explicit before coding. A recommended interpretation is fairness in $E_b/N_0$ with respect to the original `192` information bits, not merely transmitted symbol energy.
+- "Accuracy with respect to truth data" is ambiguous from the summary alone. A practical proposal is to report bit accuracy relative to the original payload and optionally packet-level correctness as a secondary metric.
 
 ## Proposed Software Architecture
 The simulation should use two parallel packet-processing pipelines driven by a shared top-level controller:
@@ -101,25 +101,25 @@ Both paths should use the same payload source, CRC logic, SNR vector, and channe
 ## Key Formulas and Algorithm Notes
 ### Assignment Requirement
 - Packet lengths:
-  \[
+  $$
   192 \xrightarrow{\text{CRC-16}} 208 \xrightarrow{\text{Hamming(7,4)}} 364
-  \]
+  $$
 - Packet error proposal:
-  \[
+  $$
   \mathrm{PER} = \frac{\text{number of packets failing CRC after receiver processing}}{\text{total packets transmitted}}
-  \]
+  $$
 
 ### Fairness Note
-- For BPSK with equal symbol energy, coded transmission sends more symbols per payload. To compare fairly in `E_b/N_0`, the noise variance or symbol scaling must reflect the effective code rate.
+- For BPSK with equal symbol energy, coded transmission sends more symbols per payload. To compare fairly in $E_b/N_0$, the noise variance or symbol scaling must reflect the effective code rate.
 - Two defensible rate definitions should be documented before coding:
-  \[
+  $$
   R_{\text{payload, uncoded}} = \frac{192}{208}, \qquad
   R_{\text{payload, coded}} = \frac{192}{364}
-  \]
+  $$
   or, if CRC overhead is treated as common overhead and only Hamming overhead is emphasized,
-  \[
+  $$
   R_{\text{CRC-packet, coded}} = \frac{208}{364} = \frac{4}{7}
-  \]
+  $$
 - The implementation should explicitly state which fairness definition is used and keep it consistent in all figures and captions.
 
 ## Plot / Report Deliverables Expected
@@ -131,8 +131,8 @@ Both paths should use the same payload source, CRC logic, SNR vector, and channe
 ## Risks / Validation Concerns
 - An incorrect CRC convention will corrupt PER measurements even if the channel simulation is otherwise correct.
 - Hamming block packing must preserve bit ordering exactly across encode and decode.
-- Unclear `E_b/N_0` fairness handling can invalidate the coded-versus-uncoded comparison.
-- “Accuracy with respect to truth data” must be defined precisely before implementation to avoid changing metrics midstream.
+- Unclear $E_b/N_0$ fairness handling can invalidate the coded-versus-uncoded comparison.
+- "Accuracy with respect to truth data" must be defined precisely before implementation to avoid changing metrics midstream.
 
 ## Open Questions / Review Items
 - Confirm whether BPSK is the intended modulation or merely a recommended implementation choice.

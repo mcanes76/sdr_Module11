@@ -41,9 +41,9 @@ Design a noise-power estimation workflow for the provided OTA captures using the
 - The repository already contains `OTA_Captures/OTA_Capture1.mat` through `OTA_Capture4.mat`.
 - The exact variable names inside those `.mat` files were not inspected here because the local Python environment lacks common MAT-file readers and MATLAB execution is intentionally deferred. The implementation should inspect variable names at coding time.
 - The live-lab script uses a covariance estimate of the form
-  \[
+  $$
   \mathbf{R} = \frac{\mathbf{X}\mathbf{X}^H}{N_{obs}-1}
-  \]
+  $$
   where columns of `\mathbf{X}` are observations.
 - The existing `calcKMin.m` returns the minimizing index `kMin` after evaluating an MDL-style objective over possible signal-subspace dimensions.
 - The corrected homework equation takes precedence over any live-lab or legacy expression if they differ.
@@ -85,29 +85,29 @@ Within `EstimateNoise`, the workflow should be:
 
 ## Key Formulas and Algorithm Notes
 ### Covariance and Eigenstructure
-\[
+$$
 \mathbf{R} = \frac{\mathbf{X}\mathbf{X}^H}{N_{obs}-1}
-\]
-\[
+$$
+$$
 \lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_M
-\]
+$$
 where `M` is the observation length and the eigenvalues are sorted in descending order.
 
 ### MDL Structure
-For each candidate signal-subspace dimension `k`, compute the geometric and arithmetic means of the trailing eigenvalues:
-\[
+For each candidate signal-subspace dimension $k$, compute the geometric and arithmetic means of the trailing eigenvalues:
+$$
 \phi_k = \left(\prod_{i=k+1}^{M}\lambda_i\right)^{1/(M-k)}
-\]
-\[
+$$
+$$
 \theta_k = \frac{1}{M-k}\sum_{i=k+1}^{M}\lambda_i
-\]
+$$
 and evaluate the corrected homework MDL criterion. The implementation must verify the exact homework expression before coding and use that version as authoritative.
 
 ### Noise Estimate
-Once `k` is selected,
-\[
+Once $k$ is selected,
+$$
 \hat{\sigma}_n^2 = \frac{1}{M-k}\sum_{i=k+1}^{M}\lambda_i
-\]
+$$
 which is the average of the noise-subspace eigenvalues.
 
 ## Plot / Report Deliverables Expected

@@ -25,25 +25,25 @@ Develop a Receiver Operating Characteristic (ROC) study for an energy detector o
 - Measurement length `L = 32`.
 - SNR value `-3 dB`.
 - Noise standard deviation or noise power definition.
-- Threshold vector `\lambda`.
+- Threshold vector $\lambda$.
 - Number of Monte Carlo trials.
 
 ### Outputs
-- Theoretical `P_{fa}` and `P_d` arrays.
-- Simulated `P_{fa}` and `P_d` arrays.
+- Theoretical $P_{fa}$ and $P_d$ arrays.
+- Simulated $P_{fa}$ and $P_d$ arrays.
 - ROC overlay plot: simulated versus theoretical.
 - Optional summary structure containing parameters and curve data.
 
 ## Assumptions and Interpretation Notes
 - The existing repository uses `Problem_2.1` naming, so this documentation follows that folder convention rather than creating a new lowercase directory.
-- The live lab uses complex AWGN and energy metric `\sum |x[n]|^2`; this is the proposed interpretation here.
-- For circular complex AWGN with per-axis standard deviation `\sigma`, the total noise power per sample is `E\{|n|^2\} = 2\sigma^2`.
+- The live lab uses complex AWGN and energy metric $\sum |x[n]|^2$; this is the proposed interpretation here.
+- For circular complex AWGN with per-axis standard deviation $\sigma$, the total noise power per sample is $E\{|n|^2\} = 2\sigma^2$.
 - A consistent SNR mapping is required before implementation. One practical proposal is
-  \[
-  |A|^2 = 10^{\mathrm{SNR}_{dB}/10}\cdot 2\sigma^2
-  \]
+  $$
+  |A|^2 = 10^{\mathrm{SNR}_{dB}/10} \cdot 2\sigma^2
+  $$
   where `A` is the deterministic signal amplitude magnitude used in signal-plus-noise trials.
-- The threshold vector should be scaled by measurement length, for example `\lambda = L \cdot \alpha`, where `\alpha` is a configurable normalized threshold sweep.
+- The threshold vector should be scaled by measurement length, for example $\lambda = L \cdot \alpha$, where $\alpha$ is a configurable normalized threshold sweep.
 
 ## Proposed Software Architecture
 The design should separate theory, simulation, and plotting into distinct functions. A top-level driver should define parameters, build the threshold vector, invoke the theoretical and simulated ROC paths, and produce a single comparison figure.
@@ -54,7 +54,7 @@ Theoretical and simulation paths should share the same `L`, SNR definition, nois
 - `main_problem_2_1.m`
   Central driver for parameter definition, function calls, and plot generation.
 - `compute_theoretical_roc.m`
-  Computes theoretical `P_{fa}` and `P_d` across the threshold vector.
+  Computes theoretical $P_{fa}$ and $P_d$ across the threshold vector.
 - `simulate_energy_detector_roc.m`
   Runs Monte Carlo trials for noise-only and signal-plus-noise cases.
 - `generate_complex_awgn.m`
@@ -74,29 +74,29 @@ Theoretical and simulation paths should share the same `L`, SNR definition, nois
 ## Key Formulas and Algorithm Notes
 ### Assignment Requirement
 - Decision metric:
-  \[
+  $$
   T = \sum_{n=1}^{L} |x[n]|^2
-  \]
+  $$
 - Decision rule:
-  \[
+  $$
   T \mathop{\gtrless}_{H_0}^{H_1} \lambda
-  \]
+  $$
 
 ### Live-Lab Guidance
 - Theoretical false alarm probability:
-  \[
-  P_{fa} = \mathrm{gammainc}\!\left(\frac{\lambda}{2\sigma^2},\, L,\, \text{'upper'}\right)
-  \]
+  $$
+  P_{fa} = \mathrm{gammainc}\!\left(\frac{\lambda}{2\sigma^2},\, L,\, \text{upper}\right)
+  $$
 - Theoretical detection probability:
-  \[
-  P_d = Q_L\!\left(\frac{\sqrt{|A|^2L}}{\sigma},\, \frac{\sqrt{\lambda}}{\sigma}\right)
-  \]
-  where `Q_L(\cdot,\cdot)` denotes the generalized Marcum Q-function, implemented in MATLAB via `marcumq(..., L)`.
+  $$
+  P_d = \mathrm{marcumq}\!\left(\frac{\sqrt{|A|^2 L}}{\sigma},\, \frac{\sqrt{\lambda}}{\sigma},\, L\right)
+  $$
+  where $\mathrm{marcumq}(\cdot,\cdot,\cdot)$ denotes the generalized Marcum Q-function in MATLAB.
 
 ### Monte Carlo Proposal
-- Under `H_0`, generate noise-only measurements and compute the fraction with `T > \lambda`.
-- Under `H_1`, generate signal-plus-noise measurements with the same noise variance and compute the fraction with `T > \lambda`.
-- Use the same threshold sweep for both `P_{fa}` and `P_d`.
+- Under $H_0$, generate noise-only measurements and compute the fraction with $T > \lambda$.
+- Under $H_1$, generate signal-plus-noise measurements with the same noise variance and compute the fraction with $T > \lambda$.
+- Use the same threshold sweep for both $P_{fa}$ and $P_d$.
 
 ## Plot / Report Deliverables Expected
 - ROC overlay plot with theoretical and simulated curves.
@@ -105,11 +105,11 @@ Theoretical and simulation paths should share the same `L`, SNR definition, nois
 
 ## Risks / Validation Concerns
 - SNR normalization can be implemented incorrectly if signal amplitude and noise power are not defined from the same convention.
-- A threshold sweep that is too narrow may fail to show both the low-`P_{fa}` and high-`P_d` regions.
+- A threshold sweep that is too narrow may fail to show both the low-$P_{fa}$ and high-$P_d$ regions.
 - Insufficient Monte Carlo trials may cause visibly noisy ROC estimates, especially in low-probability regions.
 - Use of real-noise formulas instead of complex-noise formulas would shift the theoretical curve.
 
 ## Open Questions / Review Items
 - Confirm whether the signal model should be a deterministic complex constant, a tone, or any other specified waveform under `H_1`.
-- Confirm whether the SNR definition should reference total complex noise power `2\sigma^2` or another course-specific convention.
+- Confirm whether the SNR definition should reference total complex noise power $2\sigma^2$ or another course-specific convention.
 - Confirm whether the final report should include a histogram or threshold-study diagnostic in addition to the ROC overlay.

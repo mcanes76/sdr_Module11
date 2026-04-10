@@ -50,7 +50,7 @@ Prepare a packet-level Monte Carlo plan that compares uncoded and Hamming(7,4)-c
 | Modulation | BPSK | Recommended unless repo style dictates otherwise |
 | Demodulation | Hard decision | Assignment requirement |
 | Trials per SNR | Configurable | Needs review before coding |
-| Fairness convention | `E_b/N_0` based | Must be documented explicitly |
+| Fairness convention | $E_b/N_0$ based | Must be documented explicitly |
 
 ## Verification Strategy
 - Verify the length transitions `192 -> 208 -> 364` exactly.
@@ -77,7 +77,7 @@ Prepare a packet-level Monte Carlo plan that compares uncoded and Hamming(7,4)-c
 - Confirm BPSK as the intended modulation.
 - Confirm the CRC polynomial and bit-order convention expected by the course.
 - Confirm whether the fairness definition should be based on `192` payload bits or `208` CRC-appended bits.
-- Confirm the exact meaning of “accuracy with respect to truth data.”
+- Confirm the exact meaning of "accuracy with respect to truth data."
 - Confirm the initial number of Monte Carlo trials per SNR point.
 - Confirm whether optional tables are needed in addition to plots.
 
