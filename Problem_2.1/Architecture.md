@@ -66,8 +66,8 @@ Theoretical and simulation paths should share the same `L`, SNR definition, nois
 1. Driver defines `L`, SNR, noise variance, threshold vector, and trial count.
 2. Driver passes common parameters to `compute_theoretical_roc`.
 3. Driver passes the same common parameters to `simulate_energy_detector_roc`.
-4. Theoretical branch returns vectors `(P_{fa}^{th}, P_d^{th})`.
-5. Simulation branch returns vectors `(P_{fa}^{sim}, P_d^{sim})`.
+4. Theoretical branch returns vectors `$$(P_{fa}^{th}, P_d^{th})$$`.
+5. Simulation branch returns vectors `$$(P_{fa}^{sim}, P_d^{sim})$$`.
 6. Plot helper overlays simulated and theoretical ROC curves.
 7. Driver optionally stores results in a struct for later review.
 
